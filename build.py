@@ -118,7 +118,9 @@ def index_page():
             '<h1>%s</h1><p class="lead">Twenty briefings on defending your accounts, devices, and data. Mitigation of risk, not total elimination. '
             'In 1964 the problem was keeping communications alive after an attack. Today it is keeping your digital life alive after the breach that is coming anyway.</p>'
             '<p><a class="cta" href="%s">Start Briefing 01</a> &nbsp; <a class="btn alt" href="tonight.html" style="text-decoration:none;display:inline-block;padding:11px 18px">Do this tonight</a></p></section>'
-            '<div class="panel"><b>Your progress</b><div class="meter" id="meter"><i></i></div><span id="meter-label" class="small"></span></div>'
+            '<div class="panel"><b>Your progress</b><div class="meter" id="meter"><i></i></div><span id="meter-label" class="small"></span>'
+            '<p style="margin:12px 0 0"><a class="btn" href="progress.html" style="text-decoration:none;display:inline-block">View my progress report</a> '
+            '<button class="btn alt reset-btn" data-reset type="button">Start fresh (new student on this computer)</button></p></div>'
             '<div class="panel"><b>How each briefing works</b><ol><li>Read the field report.</li><li>Run the field exercise.</li><li>Flip the flashcards and take the quiz.</li><li>Mark it complete.</li></ol></div>'
             '<input class="search" id="search" type="search" placeholder="Search briefings (try: VPN, phishing, backups)" aria-label="Search briefings">'
             '%s<h2>Tools we recommend</h2><table class="t"><tr><th>Job</th><th>Pick</th></tr>%s</table>'
@@ -145,9 +147,23 @@ def glossary_page():
             '<input class="search" id="search" type="search" placeholder="Search terms" aria-label="Search terms">%s' % rows)
     return ("Glossary", "glossary", body, "")
 
+def progress_page():
+    items = [{"t": t, "slug": s} for t, s in TONIGHT]
+    body = ('<section class="mh"><span class="tag">Self-reported record</span><h1 style="margin-top:.5em">My progress report</h1>'
+            '<p>Type your name, then print this page or save it as a PDF to turn in. Progress is saved in the browser and on the device you worked on, '
+            'so open this page there. It is a self-reported record.</p></section>'
+            '<div class="panel"><label for="r-name"><b>Student name</b></label>'
+            '<input class="nameinput" id="r-name" type="text" placeholder="First and last name" autocomplete="off">'
+            '<p class="small" style="margin:8px 0 0">IT 107 Fundamentals of the Internet | Digital Hygiene | <span id="r-date"></span></p></div>'
+            '<div id="report"></div>'
+            '<p><button class="cta" id="r-print" type="button">Print or save as PDF</button> '
+            '<button class="btn alt reset-btn" data-reset type="button">Start fresh (new student on this computer)</button></p>'
+            '<script type="application/json" id="tonight-data">%s</script>' % js(items))
+    return ("My progress report", "progress", body, "")
+
 def all_pages():
     pages = [(fname(m),) + module_page(i, m) for i, m in enumerate(MODS)]
-    pages += [("index.html",) + index_page(), ("tonight.html",) + tonight_page(), ("glossary.html",) + glossary_page()]
+    pages += [("index.html",) + index_page(), ("tonight.html",) + tonight_page(), ("glossary.html",) + glossary_page(), ("progress.html",) + progress_page()]
     return pages
 
 def write(name, content):
