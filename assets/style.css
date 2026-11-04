@@ -163,3 +163,7 @@ svg text{font-family:var(--sans)}
 .hot.btnfake.r-hit{outline:3px solid #2E6B3F}
 .hot.btnfake.r-miss{outline:3px solid #c46a00}
 .hot.btnfake.sel{outline:3px solid #B3261E}
+
+.nameinput{width:100%;padding:11px 14px;border-radius:8px;border:1px solid var(--line);background:var(--paper);color:var(--ink);font-size:1.05rem;margin-top:6px}
+@media print{.nameinput{border:0;border-bottom:1px solid #000;border-radius:0;background:transparent;color:#000;padding-left:0}
+ footer{display:none}table.t th{background:#ddd;color:#000}table.t td,table.t th{padding:5px 8px;font-size:.85rem}.mh .tag{background:none;border:1px solid #000}}

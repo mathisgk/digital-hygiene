@@ -345,6 +345,45 @@ W.irorder=function(root){
   draw();
 };
 
+
+/* ---------- reset and progress report ---------- */
+function resetAll(){
+  try{var keys=[];for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k&&k.indexOf(PFX)===0)keys.push(k);}
+    keys.forEach(function(k){localStorage.removeItem(k);});}catch(e){}
+  mem={};
+}
+function wireReset(){
+  $$('[data-reset]').forEach(function(b){
+    b.onclick=function(){
+      if(window.confirm('Clear all saved progress on this browser? This cannot be undone.')){resetAll();location.reload();}
+    };
+  });
+}
+function progressPage(){
+  var M=window.MODS||[],items=json('tonight-data')||[],host=$('#report');
+  if(!host)return;
+  var d=$('#r-date');if(d)d.textContent=new Date().toLocaleDateString();
+  var done=0,taken=0,pts=0;
+  var rows=M.map(function(m){
+    var ok=store.get('done:'+m.slug)==='1',q=store.get('quiz:'+m.slug);
+    if(ok)done++;if(q!==null){taken++;pts+=parseInt(q,10);}
+    return '<tr><td>'+pad(m.n)+'. '+esc(m.title)+'</td><td>'+(ok?'Complete':'Not complete')+'</td><td>'+(q===null?'Not taken':q+' of 3')+'</td></tr>';
+  }).join('');
+  var tn=0;
+  var trows=items.map(function(it,i){
+    var on=store.get('tonight:'+i)==='1';if(on)tn++;
+    return '<tr><td>'+(i+1)+'. '+esc(it.t)+'</td><td>'+(on?'Done':'Not done')+'</td></tr>';
+  }).join('');
+  host.innerHTML='<h2>Summary</h2><table class="t"><tr><th>Measure</th><th>Result</th></tr>'+
+    '<tr><td>Briefings marked complete</td><td>'+done+' of '+M.length+'</td></tr>'+
+    '<tr><td>Quizzes taken</td><td>'+taken+' of '+M.length+'</td></tr>'+
+    '<tr><td>Best quiz points</td><td>'+pts+' of '+(M.length*3)+'</td></tr>'+
+    '<tr><td>Do This Tonight items done</td><td>'+tn+' of '+items.length+'</td></tr></table>'+
+    '<h2>Briefings</h2><table class="t"><tr><th>Briefing</th><th>Status</th><th>Best quiz score</th></tr>'+rows+'</table>'+
+    '<h2>Do This Tonight</h2><table class="t"><tr><th>Task</th><th>Status</th></tr>'+trows+'</table>';
+  var p=$('#r-print');if(p)p.onclick=function(){window.print();};
+}
+
 /* ---------- boot ---------- */
 function boot(){
   var page=document.body.getAttribute('data-page');
@@ -352,6 +391,8 @@ function boot(){
   else if(page==='index')indexPage();
   else if(page==='tonight')tonight();
   else if(page==='glossary')glossary();
+  else if(page==='progress')progressPage();
+  wireReset();
 }
 window.CP_BOOT=boot;
 if(!window.CP_SINGLE){if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();}
